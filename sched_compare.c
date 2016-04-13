@@ -205,7 +205,7 @@ void alt_hhrn(proc_t* procs, int numprocs){
 	double avg_tat = 0;
 	double current_and_service_time = 0;
 	proc_t* service_proc = malloc(sizeof(proc_t));
-
+	//WHAT IF WE JUST HAD A NEGATIVE WAIT 
 	heap_init(numprocs, hrrn_value);
 	current_time = procs->arrival_time;
 	find_arriving(numprocs, current_time,procs);//assumes min is first
@@ -214,7 +214,9 @@ void alt_hhrn(proc_t* procs, int numprocs){
 		service_proc = heap_top();
 		//printf("\n about to delete min \n");
 		heap_deletemin();
+		//if any procs have a wait time in between this 
 		//printf("\n deleted min size is now: %d \n", heap_size());
+		
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){

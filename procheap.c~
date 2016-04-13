@@ -16,10 +16,9 @@ void heap_init(int size, double (*value_func)(const proc_t *))
   heapsize = 0;
   proc_val = value_func;
   heap[0] = malloc(sizeof(proc_t));
-  heap[0]->arrival_time = -100;
-  heap[0]->service_time = 90;
-  heap[0]->wait_time = -100;
-  printf("\n heap 0 service time: %f\n", (heap[0]->service_time + heap[0]->wait_time)/heap[0]->service_time);
+  heap[0]->arrival_time = -MAXDOUBLE;
+  heap[0]->service_time = -MAXDOUBLE;
+  heap[0]->wait_time = -MAXDOUBLE;
 }
 
 void heap_free()
@@ -47,9 +46,7 @@ int heap_insert(proc_t *elem)
   
   /* Adjust its position */
   int pos = heapsize;
-	//printf("\n proc val in pos %d: %f proc val in last pos %f \n",pos/2, proc_val(heap[pos/2]),proc_val(elem));
   while (proc_val(heap[pos/2]) > proc_val(elem)) {
-	//printf("\n proc val in pos %d: %f proc val in last pos %f \n",pos/2, proc_val(heap[pos/2]),proc_val(elem));
     heap[pos] = heap[pos/2];
     pos /= 2;
   }
@@ -103,7 +100,7 @@ proc_t *heap_deletemin()
   return min_elem;
 }
 
-/*
+
 void heap_age(double amount)
 {
   int i;
@@ -124,9 +121,10 @@ void heap_age(double amount)
 
   free(a);
 }
-*/
+
 
 // this should be equivalent to more complicated version above
+/**
 void heap_age(double amount)
 {
   int i;
@@ -135,3 +133,4 @@ void heap_age(double amount)
     heap[i]->wait_time += amount;
   }
 }
+**/
