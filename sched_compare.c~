@@ -80,6 +80,8 @@ void shortest_process_next(int numprocs, proc_t *procs){
 
 int main(int argc, char** argv)
 {
+  int i = 0;
+
   int numprocs, seed;
   proc_t *procs;   // array of procs with service time and arrival time
 
