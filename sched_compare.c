@@ -90,10 +90,11 @@ void first_come_first_served(int numprocs, proc_t *procs) {
 		if(proc->arrival_time <= current_time) {
 			avg_wait += current_time - proc->arrival_time;
 			avg_tat += (current_time - proc->arrival_time) + proc->service_time;
+			current_time += proc->service_time;
 		} else {
 			avg_tat += proc->service_time;
+			current_time = proc->arrival_time + proc->service_time;
 		}
-		current_time += proc->service_time;
 	}
 
 	// Calculate averages
@@ -147,10 +148,11 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 		if(proc->arrival_time <= current_time) {
 			avg_wait += current_time - proc->arrival_time;
 			avg_tat += (current_time - proc->arrival_time) + proc->service_time;
+			current_time += proc->service_time;
 		} else {
 			avg_tat += proc->service_time;
+			current_time = proc->arrival_time + proc->service_time;
 		}
-		current_time += proc->service_time;
 	}
 
 	// Calculate averages
