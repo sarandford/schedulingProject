@@ -46,6 +46,7 @@ int heap_insert(proc_t *elem)
   
   /* Adjust its position */
   int pos = heapsize;
+	printf("\n in heap insert proc val : %f\n", proc_val
   while (proc_val(heap[pos/2]) > proc_val(elem)) {
     heap[pos] = heap[pos/2];
     pos /= 2;
@@ -100,7 +101,7 @@ proc_t *heap_deletemin()
   return min_elem;
 }
 
-
+/*
 void heap_age(double amount)
 {
   int i;
@@ -121,10 +122,9 @@ void heap_age(double amount)
 
   free(a);
 }
-
+*/
 
 // this should be equivalent to more complicated version above
-/**
 void heap_age(double amount)
 {
   int i;
@@ -133,4 +133,3 @@ void heap_age(double amount)
     heap[i]->wait_time += amount;
   }
 }
-**/

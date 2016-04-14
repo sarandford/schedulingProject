@@ -46,6 +46,7 @@ int heap_insert(proc_t *elem)
   
   /* Adjust its position */
   int pos = heapsize;
+	printf("\n in heap insert proc val : %f\n", proc_val(elem));
   while (proc_val(heap[pos/2]) > proc_val(elem)) {
     heap[pos] = heap[pos/2];
     pos /= 2;
