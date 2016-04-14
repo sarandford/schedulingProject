@@ -160,7 +160,6 @@ double hrrn_value(proc_t *procs) {
 	// VERY IMPORTANT: I treat wait_time as the total time since the beginning of the simulation,
 	// therefore the process wait time is equal to wait_time - arrival_time. The value is made
 	// negative because the heap sorts by minimums, not maximums.
-	if(service_time
 	return -1* (procs->service_time+procs->wait_time)/procs->service_time;
 }
 
@@ -180,8 +179,8 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 		procs[i].wait_time = procs[i].arrival_time * -1;
 		heap_insert(&procs[i]);
 	}
-
 	// Pop all the procs off the heap
+	current_time = heap_top()->a
 	for(i=0; i<numprocs; i++) {
 		proc = heap_top();
 		heap_age(proc->service_time);

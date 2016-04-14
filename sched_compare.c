@@ -179,8 +179,8 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 		procs[i].wait_time = procs[i].arrival_time * -1;
 		heap_insert(&procs[i]);
 	}
-
 	// Pop all the procs off the heap
+	current_time = heap_top()->arrival_time;
 	for(i=0; i<numprocs; i++) {
 		proc = heap_top();
 		heap_age(proc->service_time);
