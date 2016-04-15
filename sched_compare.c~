@@ -160,7 +160,7 @@ double hrrn_value(proc_t *procs) {
 	// VERY IMPORTANT: I treat wait_time as the total time since the beginning of the simulation,
 	// therefore the process wait time is equal to wait_time - arrival_time. The value is made
 	// negative because the heap sorts by minimums, not maximums.
-	return -1* (procs->service_time+procs->wait_time)/procs->service_time;
+	return procs->service_time/(procs->service_time+procs->wait_time);
 }
 
 // Highest Response Ratio Next algorithm
@@ -176,11 +176,11 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 
 	// Add all the procs to the heap
 	for(i=0; i<numprocs; i++) {
-		procs[i].wait_time = procs[i].arrival_time * -1;
+		//procs[i].wait_time = procs[i].arrival_time;
 		heap_insert(&procs[i]);
 	}
 	// Pop all the procs off the heap
-	current_time = heap_top()->a
+	current_time = heap_top()->arrival_time;
 	for(i=0; i<numprocs; i++) {
 		proc = heap_top();
 		heap_age(proc->service_time);
@@ -262,15 +262,15 @@ int main(int argc, char** argv)
   seed = atoi(argv[2]);
 
   // create an array of numprocs randomly generate (arrival time, service time)
-  procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
+ // procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
 
 	// create an array of numprocs from the book_example.txt file (Comment if random)
-/*
+
   if ((procs = procs_read("book_example.txt", &numprocs)) == NULL) {
     fprintf(stderr, "Error reading procs array\n");
     return 2;
   }
-*/
+
 
   printf("procs array:\n");
   printf("(arrival time, service time)\n");
