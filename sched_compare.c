@@ -131,10 +131,11 @@ void first_come_first_served(int numprocs, proc_t *procs) {
 		if(proc->arrival_time <= current_time) {
 			avg_wait += current_time - proc->arrival_time;
 			avg_tat += (current_time - proc->arrival_time) + proc->service_time;
+			current_time += proc->service_time;
 		} else {
 			avg_tat += proc->service_time;
+			current_time = proc->arrival_time + proc->service_time;
 		}
-		current_time += proc->service_time;
 	}
 
 	// Calculate averages
@@ -160,14 +161,15 @@ double hrrn_value(proc_t *procs) {
 	// VERY IMPORTANT: I treat wait_time as the total time since the beginning of the simulation,
 	// therefore the process wait time is equal to wait_time - arrival_time. The value is made
 	// negative because the heap sorts by minimums, not maximums.
+
 	return procs->service_time/(procs->service_time+procs->wait_time);
+
 }
 
 // Highest Response Ratio Next algorithm
 void highest_response_ratio_next(int numprocs, proc_t *procs) {
 	double avg_wait = 0;
 	double avg_tat = 0;
-	double current_time = 0;
 	int i;
 	proc_t* proc;
 
@@ -183,16 +185,18 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 	current_time = heap_top()->arrival_time;
 	for(i=0; i<numprocs; i++) {
 		proc = heap_top();
-		heap_age(proc->service_time);
-		heap_deletemin(); // The heap is resorted when there is a delete
+
 		// The if/else block exists in case there is a space between processes
-		if(proc->arrival_time <= current_time) {
-			avg_wait += current_time - proc->arrival_time;
-			avg_tat += (current_time - proc->arrival_time) + proc->service_time;
+		if(proc->arrival_time <= proc->wait_time) {
+			avg_wait += proc->wait_time - proc->arrival_time;
+			avg_tat += (proc->wait_time - proc->arrival_time) + proc->service_time;
+			//current_time += proc->service_time;
 		} else {
 			avg_tat += proc->service_time;
+			heap_age(proc->arrival_time-proc->wait_time);
 		}
-		current_time += proc->service_time;
+		heap_age(proc->service_time);
+		heap_deletemin(); // The heap is resorted when there is a delete
 	}
 
 	// Calculate averages
@@ -262,14 +266,18 @@ int main(int argc, char** argv)
   seed = atoi(argv[2]);
 
   // create an array of numprocs randomly generate (arrival time, service time)
+
  // procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
 
+
+	/*
 	// create an array of numprocs from the book_example.txt file (Comment if random)
 
   if ((procs = procs_read("book_example.txt", &numprocs)) == NULL) {
     fprintf(stderr, "Error reading procs array\n");
     return 2;
   }
+	*/
 
 
   printf("procs array:\n");
