@@ -65,6 +65,7 @@ void shortest_process_next(int numprocs, proc_t *procs){
 	printf("\n average turnaround time: %f \n", avg_tat);
 	heap_free();
 }
+}
 
 // ******************************
 // FIRST-COME-FIRST-SERVED
