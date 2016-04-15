@@ -30,20 +30,25 @@ void shortest_process_next(int numprocs, proc_t *procs){
 	double avg_tat = 0;
 	double current_and_service_time = 0;
 	proc_t* service_proc = malloc(sizeof(proc_t));
-
+	int deleted_procs = 0;
 	heap_init(numprocs, spn_value);
 	current_time = procs->arrival_time;
 	find_arriving(numprocs, current_time,procs);//assumes min is first
-	while(heap_size() > 0){
-		printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
+	while(deleted_procs < numprocs){
+		while(heap_size() == 0){
+			current_time++;	
+			find_arriving(numprocs, current_time, procs);
+		}
+		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
 		service_proc = heap_top();
-		printf("\n about to delete min \n");
+		//printf("\n about to delete min \n");
 		heap_deletemin();
-		printf("\n deleted min size is now: %d \n", heap_size());
+		deleted_procs++;
+		//printf("\n deleted min size is now: %d \n", heap_size());
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
+		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){
-
 			current_time++;
 			find_arriving(numprocs, current_time, procs);
 		}
@@ -53,9 +58,11 @@ void shortest_process_next(int numprocs, proc_t *procs){
 
 	avg_wait = avg_wait / numprocs;
 	avg_tat = avg_tat / numprocs;
+	printf("\n SPN: \n");
 	printf("\n average wait time: %f \n", avg_wait);
 	printf("\n average turnaround time: %f \n", avg_tat);
 	heap_free();
+}
 }
 
 // ******************************
