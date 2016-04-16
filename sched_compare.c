@@ -65,7 +65,7 @@ void shortest_process_next(int numprocs, proc_t *procs){
 	printf("\n average turnaround time: %f \n", avg_tat);
 	heap_free();
 }
-}
+
 
 // ******************************
 // FIRST-COME-FIRST-SERVED
@@ -169,55 +169,11 @@ double hrrn_value(proc_t *procs) {
 
 // Highest Response Ratio Next algorithm
 void highest_response_ratio_next(int numprocs, proc_t *procs) {
-	double avg_wait = 0;
-	double avg_tat = 0;
-	int i;
-	proc_t* proc;
-
-	// Initialize the heap
-	heap_init(numprocs, hrrn_value);
-
-	// Add all the procs to the heap
-	for(i=0; i<numprocs; i++) {
-		//procs[i].wait_time = procs[i].arrival_time;
-		heap_insert(&procs[i]);
-	}
-	// Pop all the procs off the heap
-	current_time = heap_top()->arrival_time;
-	for(i=0; i<numprocs; i++) {
-		proc = heap_top();
-
-		// The if/else block exists in case there is a space between processes
-		if(proc->arrival_time <= proc->wait_time) {
-			avg_wait += proc->wait_time - proc->arrival_time;
-			avg_tat += (proc->wait_time - proc->arrival_time) + proc->service_time;
-			//current_time += proc->service_time;
-		} else {
-			avg_tat += proc->service_time;
-			heap_age(proc->arrival_time-proc->wait_time);
-		}
-		heap_age(proc->service_time);
-		heap_deletemin(); // The heap is resorted when there is a delete
-	}
-
-	// Calculate averages
-	avg_wait = avg_wait / numprocs;
-	avg_tat = avg_tat / numprocs;
-
-	// Print the results
-	printf("HIGHEST RESPONSE RATIO NEXT:\n");
-	printf("Mean Wait Time: \t%f\n", avg_wait);
-	printf("Mean Turnaround Time: \t%f\n\n", avg_tat);
-
-	heap_free();
-}
-void alt_hhrn(proc_t* procs, int numprocs){
 	double current_time = 0;
 	double avg_wait = 0;
 	double avg_tat = 0;
 	double current_and_service_time = 0;
 	proc_t* service_proc = malloc(sizeof(proc_t));
-	//WHAT IF WE JUST HAD A NEGATIVE WAIT 
 	heap_init(numprocs, hrrn_value);
 	current_time = procs->arrival_time;
 	find_arriving(numprocs, current_time,procs);//assumes min is first
@@ -236,7 +192,6 @@ void alt_hhrn(proc_t* procs, int numprocs){
  		while(current_time < current_and_service_time){
 			current_time++;
 			heap_age(1);
-			
 			find_arriving(numprocs, current_time, procs);
 		}
 		avg_tat = avg_tat + (current_time - service_proc->arrival_time);
@@ -249,6 +204,9 @@ void alt_hhrn(proc_t* procs, int numprocs){
 	printf("\n average wait time: %f \n", avg_wait);
 	printf("\n average turnaround time: %f \n", avg_tat);
 	heap_free();
+}
+void alt_hhrn(proc_t* procs, int numprocs){
+	
 }
 
 
@@ -271,14 +229,14 @@ int main(int argc, char** argv)
  // procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
 
 
-	/*
+	
 	// create an array of numprocs from the book_example.txt file (Comment if random)
 
   if ((procs = procs_read("book_example.txt", &numprocs)) == NULL) {
     fprintf(stderr, "Error reading procs array\n");
     return 2;
   }
-	*/
+	
 
 
   printf("procs array:\n");
@@ -288,7 +246,7 @@ int main(int argc, char** argv)
 	// CALL SORTING FUNCTIONS
   	//shortest_process_next(numprocs, procs);
 	//first_come_first_served(numprocs, procs);
-	alt_fcfs(numprocs, procs);
+	//alt_fcfs(numprocs, procs);
 	highest_response_ratio_next(numprocs, procs);
 	//alt_hhrn(procs, numprocs);
 
