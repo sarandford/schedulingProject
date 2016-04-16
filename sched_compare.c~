@@ -173,21 +173,26 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 	double avg_wait = 0;
 	double avg_tat = 0;
 	double current_and_service_time = 0;
-	proc_t* service_proc = malloc(sizeof(proc_t));
+	proc_t* service_proc = (proc_t*) malloc(sizeof(proc_t));
+	int deleted_procs = 0;
+
 	heap_init(numprocs, hrrn_value);
 	current_time = procs->arrival_time;
 	find_arriving(numprocs, current_time,procs);//assumes min is first
-	while(heap_size() > 0){
+	while(deleted_procs < numprocs){
+		//this loop waits for a process to enter the heap if there is a gap
+		while(heap_size() == 0){
+			current_time++;	
+			find_arriving(numprocs, current_time, procs);
+		}
 		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
 		service_proc = heap_top();
-		printf("\n current time: %f heap_top service time: %f \n", current_time, service_proc->service_time);
 		//printf("\n about to delete min \n");
 		heap_deletemin();
-		//if any procs have a wait time in between this 
+		deleted_procs++;
 		//printf("\n deleted min size is now: %d \n", heap_size());
-		
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
-		printf("\n waited: %f \n", current_time-service_proc->arrival_time);
+		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){
 			current_time++;
@@ -200,14 +205,14 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 
 	avg_wait = avg_wait / numprocs;
 	avg_tat = avg_tat / numprocs;
-	printf("\n ALTERNATE HHRN: \n");
+	printf("\n SPN: \n");
 	printf("\n average wait time: %f \n", avg_wait);
 	printf("\n average turnaround time: %f \n", avg_tat);
-	heap_free();
-}
-void alt_hhrn(proc_t* procs, int numprocs){
+	//heap_free();
+	free(service_proc);
 	
 }
+
 
 
 
@@ -229,14 +234,14 @@ int main(int argc, char** argv)
  // procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
 
 
-	/*
+	
 	// create an array of numprocs from the book_example.txt file (Comment if random)
 
   if ((procs = procs_read("book_example.txt", &numprocs)) == NULL) {
     fprintf(stderr, "Error reading procs array\n");
     return 2;
   }
-	*/
+	
 
 
   printf("procs array:\n");
