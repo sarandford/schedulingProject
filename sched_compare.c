@@ -29,7 +29,7 @@ void shortest_process_next(int numprocs, proc_t *procs){
 	double avg_wait = 0;
 	double avg_tat = 0;
 	double current_and_service_time = 0;
-	proc_t* service_proc = malloc(sizeof(proc_t));
+	proc_t* service_proc;
 	int deleted_procs = 0;
 	heap_init(numprocs, spn_value);
 	current_time = procs->arrival_time;
@@ -76,44 +76,42 @@ double fcfs_value(proc_t *procs) {
 
 // First-Come-First-Served algorithm
 void first_come_first_served(int numprocs, proc_t *procs) {
+	double current_time = 0;
 	double avg_wait = 0;
 	double avg_tat = 0;
-	double current_time = 0; // the time at the intersection between two procs
-	int i;
-	proc_t* proc;
-
-	// Initialize the heap
+	double current_and_service_time = 0;
+	proc_t* service_proc;
+	int deleted_procs = 0;
 	heap_init(numprocs, fcfs_value);
-
-	// Add all the procs to the heap
-	for(i=0; i<numprocs; i++) {
-		heap_insert(&procs[i]);
-	}
-
-	// Pop all the procs off the heap
-	for(i=0; i<numprocs; i++) {
-		proc = heap_deletemin();
-		// The if/else block exists in case there is a space between processes
-		if(proc->arrival_time <= current_time) {
-			avg_wait += current_time - proc->arrival_time;
-			avg_tat += (current_time - proc->arrival_time) + proc->service_time;
-			current_time += proc->service_time;
-		} else {
-			avg_tat += proc->service_time;
-			current_time = proc->arrival_time + proc->service_time;
+	current_time = procs->arrival_time;
+	find_arriving(numprocs, current_time,procs);//assumes min is first
+	while(deleted_procs < numprocs){
+		while(heap_size() == 0){
+			current_time++;	
+			find_arriving(numprocs, current_time, procs);
 		}
+		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
+		service_proc = heap_top();
+		//printf("\n about to delete min \n");
+		heap_deletemin();
+		deleted_procs++;
+		//printf("\n deleted min size is now: %d \n", heap_size());
+		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
+		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
+		current_and_service_time = current_time + service_proc->service_time;
+ 		while(current_time < current_and_service_time){
+			current_time++;
+			find_arriving(numprocs, current_time, procs);
+		}
+		avg_tat = avg_tat + (current_time - service_proc->arrival_time);
+
 	}
 
-	// Calculate averages
 	avg_wait = avg_wait / numprocs;
 	avg_tat = avg_tat / numprocs;
-
-	// Print the results
-	printf("FIRST-COME-FIRST-SERVED:\n");
-	printf("Mean Wait Time: \t%f\n", avg_wait);
-	printf("Mean Turnaround Time: \t%f\n\n", avg_tat);
-
-	// Free up the heap
+	printf("\n FCFS: \n");
+	printf("\n average wait time: %f \n", avg_wait);
+	printf("\n average turnaround time: %f \n", avg_tat);
 	heap_free();
 }
 
@@ -133,7 +131,7 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 	double avg_wait = 0;
 	double avg_tat = 0;
 	double current_and_service_time = 0;
-	proc_t* service_proc = (proc_t*) malloc(sizeof(proc_t));
+	proc_t* service_proc;
 	int deleted_procs = 0;
 
 	heap_init(numprocs, hrrn_value);
@@ -143,6 +141,7 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 		//this loop waits for a process to enter the heap if there is a gap
 		while(heap_size() == 0){
 			current_time++;	
+			heap_age(1);
 			find_arriving(numprocs, current_time, procs);
 		}
 		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
@@ -187,15 +186,18 @@ int main(int argc, char** argv)
   seed = atoi(argv[2]);
 
   // create an array of numprocs randomly generate (arrival time, service time)
-  procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
+ procs = procs_random_create(numprocs, seed, INTER_ARRIVAL_TIME, SERVICE_TIME);
 
 	
-/*	// create an array of numprocs from the book_example.txt file (Comment if random)
+	// create an array of numprocs from the book_example.txt file (Comment if random)
+/*
   if ((procs = procs_read("book_example.txt", &numprocs)) == NULL) {
     fprintf(stderr, "Error reading procs array\n");
     return 2;
   }
 */
+
+
 	
 
   printf("procs array:\n");

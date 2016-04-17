@@ -100,7 +100,7 @@ proc_t *heap_deletemin()
   return min_elem;
 }
 
-/*
+
 void heap_age(double amount)
 {
   int i;
@@ -121,8 +121,8 @@ void heap_age(double amount)
 
   free(a);
 }
-*/
 
+/*
 // this should be equivalent to more complicated version above
 void heap_age(double amount)
 {
@@ -132,3 +132,4 @@ void heap_age(double amount)
     heap[i]->wait_time += amount;
   }
 }
+*/
