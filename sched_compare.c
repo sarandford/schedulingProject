@@ -12,9 +12,7 @@ void find_arriving(int numprocs, int current_time,proc_t *procs){
 	int i = 0;//counter
 	while(i<numprocs){
 		if (procs[i].arrival_time == current_time){
-			//printf("inserted proc %d to heap! \n", i);
 			heap_insert(&procs[i]);
-			//printf("heap size is now: %d \n", heap_size());
 		}
 		i++;
 	}
@@ -39,21 +37,16 @@ void shortest_process_next(int numprocs, proc_t *procs){
 			current_time++;	
 			find_arriving(numprocs, current_time, procs);
 		}
-		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
 		service_proc = heap_top();
-		//printf("\n about to delete min \n");
 		heap_deletemin();
 		deleted_procs++;
-		//printf("\n deleted min size is now: %d \n", heap_size());
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
-		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){
 			current_time++;
 			find_arriving(numprocs, current_time, procs);
 		}
 		avg_tat = avg_tat + (current_time - service_proc->arrival_time);
-
 	}
 
 	avg_wait = avg_wait / numprocs;
@@ -71,7 +64,7 @@ void shortest_process_next(int numprocs, proc_t *procs){
 
 // FCFS Heap sorting algorithm
 double fcfs_value(proc_t *procs) {
-		return procs->arrival_time;
+	return procs->arrival_time;
 }
 
 // First-Come-First-Served algorithm
@@ -90,14 +83,10 @@ void first_come_first_served(int numprocs, proc_t *procs) {
 			current_time++;	
 			find_arriving(numprocs, current_time, procs);
 		}
-		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
 		service_proc = heap_top();
-		//printf("\n about to delete min \n");
 		heap_deletemin();
 		deleted_procs++;
-		//printf("\n deleted min size is now: %d \n", heap_size());
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
-		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){
 			current_time++;
@@ -144,14 +133,10 @@ void highest_response_ratio_next(int numprocs, proc_t *procs) {
 			heap_age(1);
 			find_arriving(numprocs, current_time, procs);
 		}
-		//printf("service time: %f heap_size: %d \n", heap_top()->service_time, heap_size());
 		service_proc = heap_top();
-		//printf("\n about to delete min \n");
 		heap_deletemin();
 		deleted_procs++;
-		//printf("\n deleted min size is now: %d \n", heap_size());
 		avg_wait = avg_wait + (current_time-service_proc->arrival_time);
-		//printf("\n wait time: %f \n", current_time-service_proc->arrival_time);
 		current_and_service_time = current_time + service_proc->service_time;
  		while(current_time < current_and_service_time){
 			current_time++;
@@ -197,8 +182,6 @@ int main(int argc, char** argv)
   }
 */
 
-
-	
 
   printf("procs array:\n");
   printf("(arrival time, service time)\n");
